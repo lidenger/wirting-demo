@@ -11,5 +11,5 @@ type Order struct {
 }
 
 func (s *Order) TableName() string {
-	return "order"
+	return "order_info"
 }
