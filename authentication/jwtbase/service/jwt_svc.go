@@ -1,8 +1,7 @@
 package service
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"jwtbase/model"
 	"jwtbase/store"
@@ -59,12 +58,37 @@ func (s *JwtSvc) GenJwt(serverSign string) (string, error) {
 	payload.SecretID = secret.ID
 	// signature
 	key := []byte(secret.Secret)
-	h := hmac.New(sha256.New, key)
 	data, err := json.Marshal(payload)
 	if err != nil {
 		return "", err
 	}
-	h.Write(data)
-	//digested := h.Sum(nil)
-	//
+	sign, err := util.Signature(data, key, "HS512")
+	if err != nil {
+		return "", err
+	}
+	jwt := &model.Jwt{
+		Header:    header,
+		Payload:   payload,
+		Signature: sign,
+	}
+	return util.JwtMarshal(jwt)
+}
+
+func VerifyJwt(jwtStr string) (bool, error) {
+	jwt, err := util.JwtUnmarshal(jwtStr)
+	if err != nil {
+		return false, err
+	}
+	payload, err := json.Marshal(jwt.Payload)
+	if err != nil {
+		return false, err
+	}
+	secret := FetchSecretByID(jwt.Payload.SecretID)
+	key := []byte(secret.Secret)
+	sign, err := util.Signature(payload, key, "HS512")
+	if err != nil {
+		return false, err
+	}
+	isVerify := hex.EncodeToString(sign) == hex.EncodeToString(jwt.Signature)
+	return isVerify, nil
 }
