@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/base64"
 	"encoding/hex"
 	"testing"
 	"time"
@@ -30,9 +31,10 @@ func Test2(t *testing.T) {
 }
 
 func TestSignature(t *testing.T) {
-	sign, err := Signature([]byte("123abc"), "HS512")
+	data, key := []byte("123abc"), []byte("123abc")
+	sign, err := Signature(data, key, "HS512")
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Log(sign)
+	t.Log(base64.RawURLEncoding.EncodeToString(sign))
 }
