@@ -21,12 +21,12 @@ func TestJwtMarshal(t *testing.T) {
 	payload.Timestamp = time.Now().Unix()
 	payload.SecretID = 1
 	// signature
-	key := []byte("aabbcc")
+	key := []byte("4d8a8dcd8e8011ef91d48c32231f5813")
 	data, err := json.Marshal(payload)
 	if err != nil {
 		panic(err)
 	}
-	sign, err := Signature(data, key, "HS512")
+	sign, err := Signature(data, key, header.Algorithm)
 	if err != nil {
 		panic(err)
 	}
@@ -51,7 +51,7 @@ func TestJwtMarshal(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	sign2, err := Signature(payload2, key, "HS512")
+	sign2, err := Signature(payload2, key, jwt.Header.Algorithm)
 	if err != nil {
 		panic(err)
 	}

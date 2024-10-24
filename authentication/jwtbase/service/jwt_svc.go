@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"jwtbase/model"
 	"jwtbase/store"
 	"jwtbase/util"
@@ -74,21 +75,26 @@ func (s *JwtSvc) GenJwt(serverSign string) (string, error) {
 	return util.JwtMarshal(jwt)
 }
 
-func VerifyJwt(jwtStr string) (bool, error) {
+func VerifyJwt(jwtStr string) (string, error) {
 	jwt, err := util.JwtUnmarshal(jwtStr)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 	payload, err := json.Marshal(jwt.Payload)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 	secret := FetchSecretByID(jwt.Payload.SecretID)
 	key := []byte(secret.Secret)
-	sign, err := util.Signature(payload, key, "HS512")
+	header := jwt.Header
+	sign, err := util.Signature(payload, key, header.Algorithm)
 	if err != nil {
-		return false, err
+		return "", err
 	}
 	isVerify := hex.EncodeToString(sign) == hex.EncodeToString(jwt.Signature)
-	return isVerify, nil
+	if isVerify {
+		return jwt.Payload.ServerSign, nil
+	} else {
+		return "", errors.New("验签失败，非法JWT")
+	}
 }

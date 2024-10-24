@@ -10,7 +10,6 @@ func Initialize() *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	g := gin.Default()
 	g.Use(middleware.Authentication)
-	g.Use(middleware.Authority)
 	api(g)
 	return g
 }

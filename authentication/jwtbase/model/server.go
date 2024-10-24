@@ -13,5 +13,5 @@ type Server struct {
 }
 
 func (s *Server) TableName() string {
-	return "server"
+	return "server_info"
 }
