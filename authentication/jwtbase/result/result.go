@@ -22,3 +22,11 @@ func R(ctx *gin.Context, err error, data any) {
 	log.Printf("%+v", err)
 	result(ctx, http.StatusOK, -1, err.Error(), data)
 }
+
+func AuthErr(ctx *gin.Context, msg string) {
+	result(ctx, http.StatusUnauthorized, -1, msg, "")
+}
+
+func ParamErr(ctx *gin.Context, msg string) {
+	result(ctx, http.StatusBadRequest, -1, msg, "")
+}

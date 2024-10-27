@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"jwtbase/result"
 	"jwtbase/service"
@@ -15,13 +14,13 @@ func Authentication(c *gin.Context) {
 		return
 	}
 	// 验证jwt
-	sign, err := service.VerifyJwt(jwt)
+	serverSign, err := service.VerifyJwt(jwt)
 	if err != nil {
-		result.R(c, errors.New("无效的JWT"), "")
+		result.AuthErr(c, "无效的JWT")
 		c.Abort()
 	}
 	// 获取服务信息
-	server, err := service.ServerSvcIns.GetBySign(sign)
+	server, err := service.ServerSvcIns.GetBySign(serverSign)
 	if err != nil {
 		log.Printf("+%v", err)
 		c.Next()
