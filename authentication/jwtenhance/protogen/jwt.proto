@@ -1,0 +1,23 @@
+syntax = "proto3";
+option go_package = "/protogen";
+
+message JwtHeader {
+  string algorithm = 1;
+  string issuer = 2;
+}
+
+message JwtPayload {
+  string jwt_id = 1;
+  string ak = 2;
+  string server_sign = 3;
+  int64 secret_id = 4;
+  string nonce = 5;
+  string ip = 6;
+  int64 timestamp = 7;
+}
+
+message Jwt {
+  JwtHeader header = 1;
+  JwtPayload payload = 2;
+  bytes signature = 3;
+}
