@@ -22,10 +22,10 @@ func FetchSecretByID(id int64) *model.Secret {
 	return allSecretMap[id]
 }
 
-func (s *JwtSvc) LoadAllSecret() error {
+func (s *JwtSvc) LoadAllSecret() {
 	arr, err := s.store.SelectAllSecret()
 	if err != nil {
-		return err
+		panic(err)
 	}
 	for _, secret := range arr {
 		if secret.IsEnable == 1 {
@@ -36,7 +36,6 @@ func (s *JwtSvc) LoadAllSecret() error {
 	if len(allSecretMap) == 0 {
 		panic("没有可用的系统密钥")
 	}
-	return nil
 }
 
 func (s *JwtSvc) RandomSecret() *model.Secret {
@@ -63,7 +62,7 @@ func (s *JwtSvc) GenJwt(serverSign string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	sign, err := util.Signature(data, key, "HS512")
+	sign, err := util.Signature(data, key, header.Algorithm)
 	if err != nil {
 		return "", err
 	}

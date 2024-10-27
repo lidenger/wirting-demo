@@ -16,6 +16,7 @@ func Initialize() *gin.Engine {
 
 func api(g *gin.Engine) {
 	g.GET("/health", handler.Health)
+	g.POST("/genToken", handler.GenToken)
 
 	v1 := g.Group("/v1")
 	v1.Use(middleware.Authority)
