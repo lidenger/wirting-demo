@@ -17,19 +17,19 @@ import (
 	"time"
 )
 
-func GetOrderByNo(orderNo string) (Order, error) {
+func GetOrderByNo(orderNo string) (model.Order, error) {
 	domain := "http://127.0.0.1"
 	url := "/v1/order/" + orderNo
 	req, err := http.NewRequest("GET", domain+url, nil)
 	if err != nil {
-		return Order{}, err
+		return model.Order{}, err
 	}
 	req.Header.Set("Authorization", GenSignatureHeader(url))
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return Order{}, err
+		return model.Order{}, err
 	}
-	return analysisResp[Order](resp)
+	return analysisResp[model.Order](resp)
 }
 
 // GenSignatureHeader 生成Authorization
