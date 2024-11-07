@@ -12,7 +12,7 @@ import (
 )
 
 func GetOrderByNo(orderNo string) (*model.Order, error) {
-	domain := "https://local.com"
+	domain := "https://server2.lidenger.com"
 	url := "/v1/order/" + orderNo
 
 	// 配置server ca证书

@@ -12,6 +12,7 @@ func Authority(c *gin.Context) {
 	if !isExists {
 		result.R(c, errors.New("无效服务信息，无权访问"), "")
 		c.Abort()
+		return
 	}
 	log.Printf("server:%+v\n", server)
 	c.Next()

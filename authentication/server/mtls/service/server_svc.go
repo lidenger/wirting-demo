@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"mtls/model"
 	"mtls/store"
 )
@@ -9,13 +10,9 @@ type ServerSvc struct {
 	store *store.ServerStore
 }
 
-func (s *ServerSvc) GetServerByIp(ip string) (*model.Server, error) {
-	serverIp, err := s.store.SelectByIp(ip)
-	if err != nil {
-		return nil, err
+func (s *ServerSvc) GetBySign(sign string) (*model.Server, error) {
+	if sign == "" {
+		return nil, errors.New("sign不能为空")
 	}
-	if serverIp == nil {
-		return nil, nil
-	}
-	return s.store.SelectBySign(serverIp.Sign)
+	return s.store.SelectBySign(sign)
 }
